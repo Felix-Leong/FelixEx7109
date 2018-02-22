@@ -1,0 +1,44 @@
+document.ontouchstart = function(){};
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.props = props;
+    this.state = {
+      news: []
+    };
+  }
+
+  componentDidMount() {
+      fetch("https://newsapi.org/v2/everything?sources=nbc-news&apiKey=d5b7d703c47f4e29bbd8c386f5738058")
+      .then( (response) => {
+        return response.json();
+      })
+      .then( (data) => {
+        this.setState({news: data.articles});
+      });    
+  }
+
+  render() {
+    return (
+      <div>
+        <ul>
+          <li>
+            <ul>
+              {this.state.news.map(item => (
+                <a href={item.url}>
+                  <li key={item.url} className="list-item">
+                    <div>
+                        {item.title}
+                        <div className="remark">{item.publishedAt} {item.author==null?'':'@'} {item.author}</div>
+                    </div>
+                  </li>
+                </a>
+              ))}
+            </ul>
+          </li>
+        </ul>
+      </div>
+    );
+  }
+}
+ReactDOM.render(<App />, document.getElementById("app"));
